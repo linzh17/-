@@ -1,13 +1,12 @@
 package BitMap;
 import java.util.*;
-import BitMap.Table;
 public class Bitmap {
 
 	private static final int bitsize = 100;//位向量的长度
 	public String name;//索引名
 	public Vector<Integer> total;
 	public BitSet bitmap [];
-	public Bitmap(String n, Vector<Integer> testdata) {
+	public Bitmap(String n, Vector<Integer> testdata,int size) {
         name = n;
 		total = new Vector<Integer>();
 		bitmap = new BitSet[100];//估计100个取值
@@ -18,7 +17,7 @@ public class Bitmap {
 		
 		int temp,index;
 		
-		for(int j=0;j<Table.testdatasize;j++) {
+		for(int j=0;j<size;j++) {
 			temp = testdata.get(j);
 			index=total.indexOf(temp);//根据取值去找对应下标
 			if(index!=-1) {
@@ -31,11 +30,11 @@ public class Bitmap {
 		}
 	}
 	
-	public void display() {
+	public void display(int index) {
 		for(int j=0;j<total.size();j++) {
 			System.out.print(total.get(j).toString() + ": " );
-			for(int k=0;k<Table.lastRecordIndex;k++) {
-				System.out.print(bitmap[j].get(k));
+			for(int k=0;k<index;k++) {
+				System.out.print(bitmap[j].get(k) + " ");
 			}
 			System.out.println();
 		}
