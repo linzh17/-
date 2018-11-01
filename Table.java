@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.util.BitSet;
 import java.util.Scanner;
 import java.util.Vector;
-
+import BitMap.Jdbc;
 import BitMap.Bitmap;
 public class Table {
 
@@ -15,12 +15,13 @@ public class Table {
 	public static Vector<Integer> deleterow ;//删除标记
 	public static void main(String[] args) {
 		Table table = new Table();
+		new Jdbc(testdataage, testdatamoney);
 		Bitmap age = new Bitmap("age",testdataage,testdatasize);
 		Bitmap money = new Bitmap("money",testdatamoney,testdatasize);
 		age.display(lastRecordIndex);
 		money.display(lastRecordIndex);
 		try {
-//			table.Find(age, money);
+		   table.Find(age, money);
 //			table.Insert(age, money);
 //			table.Delete(age, money);
 //			age.display(lastRecordIndex);
@@ -35,12 +36,6 @@ public class Table {
 		deleterow = new Vector<Integer>();
 		testdataage = new Vector<Integer>() ;
 		testdatamoney = new Vector<Integer>();
-		int temp;
-		for(int j=0;j<testdatasize;j++) {
-			temp = (int) (Math.random()*20);//测试数据生成
-			testdataage.add(temp);
-			testdatamoney.add(temp*300);
-		}
 	}
 	public  boolean Find(Bitmap a,Bitmap b) throws IOException {
 		System.out.print("请输入两个值：");
