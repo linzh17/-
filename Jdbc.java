@@ -41,5 +41,8 @@ public class Jdbc {
 				e.printStackTrace();
 			}
 	}
+//	public void executeSql() {
+//		
+//	}
 	
 }

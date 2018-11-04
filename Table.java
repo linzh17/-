@@ -8,7 +8,7 @@ import BitMap.Jdbc;
 import BitMap.Bitmap;
 public class Table {
 
-	public static final int testdatasize = 10;//初始测试数据的大小
+	public static final int testdatasize = 10000;//初始测试数据的大小！！！一定要对应真实记录数
 	public static  int lastRecordIndex =testdatasize;//当前记录数
 	public static Vector<Integer> testdataage ;//年龄的模拟字段
 	public static Vector<Integer> testdatamoney ;//薪金的模拟字段
@@ -18,8 +18,8 @@ public class Table {
 		new Jdbc(testdataage, testdatamoney);
 		Bitmap age = new Bitmap("age",testdataage,testdatasize);
 		Bitmap money = new Bitmap("money",testdatamoney,testdatasize);
-		age.display(lastRecordIndex);
-		money.display(lastRecordIndex);
+		//age.display(lastRecordIndex);
+		//money.display(lastRecordIndex);
 		try {
 		   table.Find(age, money);
 //			table.Insert(age, money);

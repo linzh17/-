@@ -3,16 +3,17 @@ package BitMap;
 import java.util.*;
 public class Bitmap {
 
-	private static final int bitsize = 100;//位向量的长度相当于记录数
+	private static final int bitsize = 10000;//位向量的长度相当于记录数
+	private static final int totalResult = 9000;//估计取值数
 	public String name;//索引名
 	public Vector<Integer> total;
 	public BitSet bitmap [];
 	public Bitmap(String n, Vector<Integer> testdata,int size) {
         name = n;
 		total = new Vector<Integer>();
-		bitmap = new BitSet[100];//估计100个取值
+		bitmap = new BitSet[totalResult];
 		
-		for(int i=0;i<100;i++) {
+		for(int i=0;i<totalResult;i++) {
 			bitmap[i] = new BitSet(bitsize);
 		}
 		
@@ -41,11 +42,11 @@ public class Bitmap {
 		}
 	}
 	//1、统计0的个数i，计算要j位二进制数才能表示i，j-1个1和一个0后面再跟对应i的二进制表示
-//	public void compression(int index) throws FileNotFoundException {
+//	public void compression(int index)  {
 //		int i = 0;
 //		int j = 0;
 //		String result;
-//		BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream("compressionBitmap.txt"));
+//		
 //		for(int p=0;p<total.size();p++) {
 //			for(int q=0;q<index;q++) {
 //				if(bitmap[p].get(q)==false) {
