@@ -1,10 +1,11 @@
 package BitMap;
 
 import java.util.*;
+
 public class Bitmap {
 
-	private static final int bitsize = 10000;//位向量的长度相当于记录数
-	private static final int totalResult = 9000;//估计取值数
+	private static final int bitsize = 10;//位向量的长度相当于记录数
+	private static final int totalResult = 10;//估计取值数
 	public String name;//索引名
 	public Vector<Integer> total;
 	public BitSet bitmap [];
@@ -41,27 +42,38 @@ public class Bitmap {
 			System.out.println();
 		}
 	}
-	//1、统计0的个数i，计算要j位二进制数才能表示i，j-1个1和一个0后面再跟对应i的二进制表示
-//	public void compression(int index)  {
-//		int i = 0;
-//		int j = 0;
-//		String result;
-//		
-//		for(int p=0;p<total.size();p++) {
-//			for(int q=0;q<index;q++) {
-//				if(bitmap[p].get(q)==false) {
-//					i++;
-//				}
-//				else {
-//					j=(int)(Math.log(i)/Math.log(j))+1;
-//					result = Integer.toBinaryString(i);
-//					result.toCharArray();
-//					i=0;
-//				}
-//			}
-//		}
-//	}
-//	public void  discompression() {
-//		
-//	}
+	//统计0的个数i，计算要j位二进制数才能表示i，j-1个1和一个0后面再跟对应i的二进制表示
+	public void compression(int index,Vector<String> vector)  {
+		int i = 0;
+		int j = 0;
+		String result = "";
+		String temp;
+		vector.clear();
+		System.out.println("正在压缩" + name +"索引");
+		for(int p=0;p<total.size();p++) {
+			for(int q=0;q<index;q++) {
+				if(bitmap[p].get(q)==false) {
+					i++;
+				}
+				else {
+					j=(int)(Math.log(i)/Math.log(2))+1;
+					temp = Integer.toBinaryString(i);
+					temp = "0" + temp;
+				       for(int z=0;z<j-1;z++) {
+				    	   temp = "1" + temp;
+				       }
+				       result = result + temp;
+					i=0;
+				}
+			}
+			vector.add(result);
+			i=0;
+			result = "";
+		}
+		System.out.println("压缩完毕");
+	}
+	public void  discompression() {
+		
+	}
+	
 }
