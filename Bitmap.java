@@ -4,8 +4,8 @@ import java.util.*;
 
 public class Bitmap {
 
-	private static final int bitsize = 10;//位向量的长度相当于记录数
-	private static final int totalResult = 10;//估计取值数
+	private static final int bitsize = 10005;//位向量的长度相当于记录数留5个空位来演示插入
+	private static final int totalResult = 7000;//估计取值数
 	public String name;//索引名
 	public Vector<Integer> total;
 	public BitSet bitmap [];
@@ -33,6 +33,16 @@ public class Bitmap {
 		}
 	}
 	
+	public Bitmap(String n) {
+        name = n;
+		total = new Vector<Integer>();
+		bitmap = new BitSet[totalResult];
+		
+		for(int i=0;i<totalResult;i++) {
+			bitmap[i] = new BitSet(bitsize);
+		}	
+	
+	}
 	public void display(int index) {
 		for(int j=0;j<total.size();j++) {
 			System.out.print(total.get(j).toString() + ": " );
@@ -48,6 +58,7 @@ public class Bitmap {
 		int j = 0;
 		String result = "";
 		String temp;
+		
 		vector.clear();
 		System.out.println("正在压缩" + name +"索引");
 		for(int p=0;p<total.size();p++) {
@@ -72,8 +83,40 @@ public class Bitmap {
 		}
 		System.out.println("压缩完毕");
 	}
-	public void  discompression() {
-		
+	//统计共有多少个1 再加一个0 = i 表示后i位为一个二进制数 j 加j个0后补个1 
+	public void  discompression(Vector<String> vector) {
+		String result;
+		String temp;
+		int j = 0;
+		int i = 0;
+		int onecount = 0;//1的个数
+		System.out.println("正在解压" + name +"索引");
+		for(int p=0;p<total.size();p++) {
+			result = vector.get(p);
+			for(int q=0;q<result.length();) {
+				if(result.charAt(q)=='1') {
+					i++;
+					q++;
+				}
+				else {
+					i++;
+					temp = result.substring(q+1, q+i+1);
+					j = j + Integer.parseInt(temp,2);//bug
+					bitmap[p].set(j+onecount);
+					q=q+i+1;
+					i=0;
+					onecount++;
+				}
+			}
+			j=0;
+			onecount=0;
+		}
+		System.out.println("解压完毕");
 	}
-	
+	public void clear() {
+		for(int i=0;i<totalResult;i++) {
+			bitmap[i].clear();
+		}	
+		total.clear();
+	}
 }

@@ -9,43 +9,59 @@ import BitMap.Bitmap;
 
 public class Table {
 
-	public static final int testdatasize = 10;// 初始测试数据的大小！！！一定要对应真实记录数
+	public static final int testdatasize = 10000;// 初始测试数据的大小！！！一定要对应真实记录数
 	public static int lastRecordIndex = testdatasize;// 当前记录数
 	public static Vector<Integer> testdataage;// 年龄的模拟字段
 	public static Vector<Integer> testdatamoney;// 薪金的模拟字段
 	public static Vector<Integer> deleterow;// 删除标记
     public static Vector<String> compression;
+    private static final Scanner sc = new Scanner(System.in);
 	public static void main(String[] args) {
+		//新建表+数据
 		Table table = new Table();
 		Jdbc jdbc = new Jdbc();
 		jdbc.initTestData(testdataage, testdatamoney);
-		//如果数据库里没有索引就新建
+		//根据数据建索引
 		Bitmap age = new Bitmap("age", testdataage, testdatasize);
-		System.out.println("列age索引生成完毕"); 
+		System.out.println("列age索引生成完毕");
+
 		Bitmap money = new Bitmap("money", testdatamoney, testdatasize);
-		System.out.println("列money索引生成完毕");	 
-		//如果有就解压生成索引
-		
-		try {                  //查询，插入，删除操作
-//			table.Findone(age);
-		table.Find(age, money);
+		System.out.println("列money索引生成完毕");
+		 
+		//查询，插入，删除操作（默认查询）
+		try {             
+			// table.Findone(age);
+			 table.Find(age, money);
 			// table.Insert(age, money);
-			// table.Delete(age, money);
-			// age.display(lastRecordIndex);
+//			table.Delete(age, money);
+			// age.display(lastRecordIndex);做小型演示用
 			// money.display(lastRecordIndex);
-			//
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		if (!jdbc.tableCompressionHasData(age.name)) {//最后压缩存进数据库
+		//压缩存进数据库
 			age.compression(lastRecordIndex,compression);
-			jdbc.insertTableCompression(age.name, compression);	
-		}
-		if (!jdbc.tableCompressionHasData(money.name)) {
+			jdbc.insertTableCompression(age.name, compression, age.total);	
+		
 			money.compression(lastRecordIndex,compression);
-			jdbc.insertTableCompression(money.name, compression);
+			jdbc.insertTableCompression(money.name, compression, money.total);	
+		//解压再拿出来          	
+          age.clear();
+          jdbc.getFromCompressionTable(age, compression);
+          age.discompression(compression);
+          	         
+          money.clear();
+          jdbc.getFromCompressionTable(money, compression);
+          money.discompression(compression);    	
+		//再一次查询验证解压的到底对不对
+		try {
+			table.Find(age, money);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
+			jdbc.close();
+			sc.close();
 	}
 
 	public Table() {
@@ -57,12 +73,10 @@ public class Table {
 
 	public boolean Find(Bitmap a, Bitmap b) throws IOException {
 		System.out.print("请输入两个值：");
-		Scanner sc = new Scanner(System.in);
 		int temp1 = sc.nextInt();
 		int temp2 = sc.nextInt();
 		int temp3 = a.total.indexOf(temp1);
 		int temp4 = b.total.indexOf(temp2);
-		sc.close();
 		if (temp3 != -1 && temp4 != -1) {
 			BitSet bs = (BitSet) a.bitmap[temp3].clone();
 			bs.and(b.bitmap[temp4]);
@@ -83,10 +97,8 @@ public class Table {
 	}
 	public boolean Findone(Bitmap a) throws IOException {
 		System.out.print("请输入一个值：");
-		Scanner sc = new Scanner(System.in);
 		int temp1 = sc.nextInt();
 		int temp3 = a.total.indexOf(temp1);
-		sc.close();
 		if (temp3 != -1) {
 			if (a.bitmap[temp3].isEmpty()) {
 				System.out.println("没有找到相应的记录");
@@ -104,14 +116,12 @@ public class Table {
 
 	}
 	public void Insert(Bitmap a, Bitmap b) throws IOException {
-		/* 现在是两个值，到时候可以输入一条记录，然后做拆分 */
-		System.out.print("请输入两个值：");
-		Scanner sc = new Scanner(System.in);
+		//指的是插入到索引里
+		System.out.print("请输入两个插入值：");
 		int temp1 = sc.nextInt();
 		int temp2 = sc.nextInt();
 		int temp3 = a.total.indexOf(temp1);
 		int temp4 = b.total.indexOf(temp2);
-		sc.close();
 		if (temp3 != -1) {
 			a.bitmap[temp3].set(lastRecordIndex, true);
 		} else {
@@ -130,10 +140,9 @@ public class Table {
 	}
 
 	public void Delete(Bitmap a, Bitmap b) throws IOException {
+		//从索引里删除
 		System.out.print("请输入要删除的第n条记录：");
-		Scanner sc = new Scanner(System.in);
 		int n = sc.nextInt();
-		sc.close();
 		if (n > lastRecordIndex || n < 1) {
 			System.out.println("输入的记录号超出范围");
 			return;
